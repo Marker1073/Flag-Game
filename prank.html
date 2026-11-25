@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>системное обновление</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#060a07; --panel:#0c140f; --line:#15291c; --green:#39ff7a; --green-dim:#1f7a44;
+  --text:#d7ffe3; --muted:#5f8a70; --tg:#54a9eb; --tg-bg:#17212b; --tg-panel:#1e2a36; --danger:#ff4d5e;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]){ --bg:#060a07; --panel:#0c140f; }
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:'JetBrains Mono', ui-monospace, Consolas, monospace;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  overflow-x:hidden;
+}
+#stage{min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:24px;}
+
+/* INTRO */
+#intro{text-align:center; max-width:420px;}
+#intro h1{font-size:1.3rem; margin:0 0 10px; color:var(--green); font-weight:700;}
+#intro p{color:var(--muted); font-size:.9rem; line-height:1.5; margin:0 0 22px;}
+button{
+  font-family:inherit; font-size:.95rem; font-weight:700; cursor:pointer;
+  background:var(--green); color:#06240f; border:none; border-radius:4px;
+  padding:13px 26px; letter-spacing:.02em;
+}
+button:focus-visible{outline:2px solid var(--text); outline-offset:2px;}
+button.ghost{background:transparent; color:var(--green); border:1px solid var(--green-dim); font-weight:500;}
+
+/* TERMINAL */
+#term{display:none; width:100%; max-width:520px;}
+#term .box{background:var(--panel); border:1px solid var(--line); border-radius:6px; padding:18px 16px; min-height:260px;}
+#term .bar{display:flex; gap:6px; margin-bottom:14px;}
+#term .dot{width:9px; height:9px; border-radius:50%; background:var(--green-dim);}
+#term pre{margin:0; font-size:.82rem; line-height:1.65; white-space:pre-wrap; word-break:break-word;}
+#term .cursor{display:inline-block; width:7px; height:14px; background:var(--green); vertical-align:middle; animation:blink 1s steps(1) infinite;}
+@keyframes blink{50%{opacity:0;}}
+
+/* FLASH */
+#flash{position:fixed; inset:0; background:var(--text); opacity:0; pointer-events:none; z-index:50;}
+
+/* TG MOCK */
+#tg{display:none; width:100%; max-width:380px; background:var(--tg-bg); border-radius:14px; overflow:hidden; border:1px solid #0d151c;}
+#tg header{background:var(--tg-panel); padding:14px 16px; display:flex; align-items:center; justify-content:space-between;}
+#tg header .title{font-weight:700; font-size:.95rem;}
+#tg header .count{color:var(--tg); font-size:.78rem;}
+#list{max-height:46vh; overflow-y:auto;}
+.chat{display:flex; gap:10px; padding:10px 14px; border-bottom:1px solid #15202b; animation:in .25s ease both;}
+@keyframes in{from{opacity:0; transform:translateY(-4px);} to{opacity:1; transform:none;}}
+.avatar{width:38px; height:38px; min-width:38px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1rem; color:#fff; font-weight:700;}
+.meta{min-width:0; flex:1;}
+.name{font-size:.85rem; font-weight:700; color:#eee; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.msg{font-size:.78rem; color:#7f93a3; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+#timerbar{padding:12px 16px; background:var(--tg-panel); text-align:center; border-top:1px solid #0d151c;}
+#timerbar .label{font-size:.72rem; color:#7f93a3; margin-bottom:4px;}
+#timerbar .clock{font-size:1.3rem; font-weight:700; color:var(--danger); letter-spacing:.03em;}
+#tgfoot{display:flex; gap:8px; padding:12px 14px;}
+#tgfoot button{flex:1; padding:10px; font-size:.78rem;}
+
+/* DONE */
+#done{display:none; text-align:center; max-width:380px;}
+#done h2{color:var(--danger); font-size:1.15rem; margin:0 0 8px;}
+#done p{color:var(--muted); font-size:.85rem; margin:0 0 20px; line-height:1.5;}
+
+.hidden{display:none !important;}
+</style>
+</head>
+<body>
+<div id="flash"></div>
+<div id="stage">
+
+  <div id="intro">
+    <h1>⚠ system_patch_0x4F.exe</h1>
+    <p>Это шуточная страница-розыгрыш для телефона или ноутбука. Она ничего не отправляет и не взламывает — просто красиво имитирует «взлом» на экране. Дай другу телефон открытым на этой вкладке.</p>
+    <button id="startBtn">Запустить</button>
+  </div>
+
+  <div id="term">
+    <div class="box">
+      <div class="bar"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+      <pre id="termText"></pre>
+    </div>
+  </div>
+
+  <div id="tg">
+    <header>
+      <div class="title">Telegram</div>
+      <div class="count" id="countLbl">добавлено чатов: 0</div>
+    </header>
+    <div id="list"></div>
+    <div id="timerbar">
+      <div class="label">все новые чаты будут удалены через</div>
+      <div class="clock" id="clock">24:00:00</div>
+    </div>
+    <div id="tgfoot">
+      <button id="wipeBtn">Удалить сейчас</button>
+      <button class="ghost" id="resetBtn2">Сброс</button>
+    </div>
+  </div>
+
+  <div id="done">
+    <h2>Чаты удалены</h2>
+    <p>Розыгрыш окончен. Ничего реально не менялось — это была локальная анимация в браузере.</p>
+    <button id="resetBtn">Запустить заново</button>
+  </div>
+
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const DEADLINE_KEY = 'prank_deadline_v1';
+
+const hackLines = [
+  '> подключение к сети Telegram...',
+  '> поиск активной сессии...  [найдено]',
+  '> перехват токена авторизации...',
+  '> ########## 100%',
+  '> обход двухфакторной защиты...',
+  '> сессия скомпрометирована',
+  '> выполняется: force_logout()',
+  '> загрузка случайных диалогов...',
+  '> маскировка источника...  [ок]',
+  '> ГОТОВО. Устройство выходит из аккаунта через 3...2...1'
+];
+
+const names = [
+  'Мама (не бери трубку!)','Директор школы №3','Тот самый препод','Бывший из 9 класса',
+  'Бабушка из деревни','Сергей Иванович, бухгалтерия','Таксист Руслан','Сосед сверху 🔨',
+  'Группа «Соседи по подъезду»','Кредит под 0.1%!!! 🔥','Пенсионный фонд РФ','ЖКХ Петроградского р-на',
+  'Училка по музыке','Дядя Толя (с Днём рождения!)','Начальник 🚨СРОЧНО🚨','Клининг «Чистюля»',
+  'Стоматолог Анна Петровна','СберОнлайн','Выпускники 2014','Барбершоп «Борода»',
+  'Тётя Галя из Одноклассников','Курьер СДЭК','Ветеринар «Лапки»','Служба доставки суши',
+  'Бывший сокурсник Дима','Группа «Дачники 59»','Нотариус Валентина','Фитнес-клуб «Атлет»',
+  'Автосервис «Жигуль-Про»','Риелтор Марина'
+];
+const avatarColors = ['#e06b6b','#4fb4de','#7ed16f','#e0a84f','#9b7ede','#de6fb0','#5bc9c0'];
+
+let termIdx = 0, typedChars = 0;
+function typeTerminal(){
+  const el = $('termText');
+  if (termIdx >= hackLines.length){
+    setTimeout(flashAndSwitch, 500);
+    return;
+  }
+  const line = hackLines[termIdx];
+  if (typedChars <= line.length){
+    el.textContent = hackLines.slice(0, termIdx).join('\n') + (termIdx>0?'\n':'') + line.slice(0, typedChars);
+    typedChars++;
+    setTimeout(typeTerminal, 14 + Math.random()*20);
+  } else {
+    termIdx++; typedChars = 0;
+    setTimeout(typeTerminal, 180);
+  }
+}
+
+function flashAndSwitch(){
+  const f = $('flash');
+  f.style.transition = 'opacity .08s';
+  f.style.opacity = '1';
+  setTimeout(()=>{ f.style.opacity='0'; }, 90);
+  setTimeout(()=>{
+    $('term').style.display='none';
+    $('tg').style.display='block';
+    startAddingChats();
+  }, 200);
+}
+
+function startAddingChats(){
+  const list = $('list');
+  const target = 80 + Math.floor(Math.random()*41); // 80-120
+  let added = 0;
+  const timer = setInterval(()=>{
+    if (added >= target){ clearInterval(timer); return; }
+    const n = names[Math.floor(Math.random()*names.length)];
+    const col = avatarColors[Math.floor(Math.random()*avatarColors.length)];
+    const row = document.createElement('div');
+    row.className = 'chat';
+    row.innerHTML = `<div class="avatar" style="background:${col}">${n.trim()[0]}</div>
+      <div class="meta"><div class="name">${n}</div><div class="msg">новое сообщение · только что</div></div>`;
+    list.prepend(row);
+    added++;
+    $('countLbl').textContent = 'добавлено чатов: ' + added;
+    if (list.children.length > 40) list.removeChild(list.lastChild);
+  }, 35);
+  ensureDeadline();
+  tickClock();
+}
+
+function ensureDeadline(){
+  let dl = localStorage.getItem(DEADLINE_KEY);
+  if (!dl){
+    dl = Date.now() + 24*60*60*1000;
+    try{ localStorage.setItem(DEADLINE_KEY, dl); }catch(e){}
+  }
+}
+
+let clockTimer;
+function tickClock(){
+  clearInterval(clockTimer);
+  clockTimer = setInterval(()=>{
+    const dl = Number(localStorage.getItem(DEADLINE_KEY) || Date.now());
+    const diff = Math.max(0, dl - Date.now());
+    const h = String(Math.floor(diff/3600000)).padStart(2,'0');
+    const m = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+    const s = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+    $('clock').textContent = `${h}:${m}:${s}`;
+    if (diff <= 0){ clearInterval(clockTimer); wipeChats(); }
+  }, 1000);
+}
+
+function wipeChats(){
+  clearInterval(clockTimer);
+  $('tg').style.display = 'none';
+  $('done').style.display = 'block';
+  try{ localStorage.removeItem(DEADLINE_KEY); }catch(e){}
+}
+
+function resetAll(){
+  $('done').style.display='none';
+  $('tg').style.display='none';
+  $('term').style.display='none';
+  $('termText').textContent='';
+  $('list').innerHTML='';
+  $('countLbl').textContent='добавлено чатов: 0';
+  termIdx=0; typedChars=0;
+  try{ localStorage.removeItem(DEADLINE_KEY); }catch(e){}
+  $('intro').style.display='block';
+}
+
+$('startBtn').addEventListener('click', ()=>{
+  $('intro').style.display='none';
+  $('term').style.display='block';
+  typeTerminal();
+});
+$('wipeBtn').addEventListener('click', wipeChats);
+$('resetBtn').addEventListener('click', resetAll);
+$('resetBtn2').addEventListener('click', resetAll);
+</script>
+</body>
+</html>
