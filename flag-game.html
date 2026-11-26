@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="ru"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Flag Game</title>
 <link rel="icon" href="flag-game.png">
 <style>
@@ -98,22 +100,28 @@ h1.logo{font-size:46px;font-weight:800;letter-spacing:-.02em;background:linear-g
 @keyframes stI2{to{opacity:.9}}
 @media(prefers-reduced-motion:reduce){#splash{display:none}}
 .gl{display:block;width:96px;height:96px;margin:14px auto 0;border-radius:22px;box-shadow:0 8px 24px rgba(0,0,0,.25);animation:pop .5s backwards}
+.f3{grid-template-columns:repeat(3,1fr)}.f3 button{padding:12px 4px;font-size:13px}
 </style></head><body><div id="app"></div>
 <div id="splash"><div class="sp sp1"><svg class="lg" viewBox="0 0 120 120" width="120" height="120" fill="none"><defs><linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4f7cff"/><stop offset=".55" stop-color="#b05cff"/><stop offset="1" stop-color="#ff5c9d"/></linearGradient></defs><circle class="rg" cx="60" cy="60" r="54" stroke="url(#sg)" stroke-opacity=".5" stroke-width="2"/><path class="m" d="M30 86V34L60 66L90 34V86" stroke="url(#sg)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg><div class="st">MARKER TEAM</div></div>
 <div class="sp sp2"><div class="tt">Flag Game</div><div class="fl">🇦🇲 🇷🇺 🇬🇧 🇯🇵 🇧🇷</div></div></div>
 <script>
-const CODES=["US,GB,FR,DE,IT,ES,RU,CN,JP,BR,CA,AU,IN,MX,KR,TR,UA,PL,SE,NO,CH,AR,EG,GR,NL,PT,IE,AT,BE,SA,ZA,FI,DK,IL,CU,AM,GE,NZ,CL,CO,CZ,HU,IR,KZ,TH,ID,HR,IS,RO,BG,PE,VN,PK,MA,PH,MY,SG,BY,AE,EE,LV,LT,KP", "AZ,BO,CR,CY,EC,ET,IQ,JM,JO,KE,KW,KG,LB,LU,MD,MN,NP,NG,PA,PY,QA,RS,SK,SI,LK,SY,TJ,TM,UY,UZ,VE,GH,BD,AF,MM,KH,MT,AL,SN,DZ,TN,LY,BA,MK,MV,OM,YE,TZ,UG,ZW,ZM,AO,CM,HT,BS,BB,TT", "BT,BN,ML,NE,TV,NR,KI,PW,SC,SZ,LS,BI,KM,LA,BH,TL,PG,FJ,WS,TO,VU,SB,MH,FM,LI,SM,ME,AD,BZ,DM,GD,LC,SR,GY,GA,GM,SL,LR,TG,BJ,BF,CV,GQ,DJ,ER,SO,SS,MW,MZ,NA,BW,MG,MU,RW,MR,CI,GN,GW,CF,CG,CD,VC,KN,AG"];
+const CODES=["US,GB,FR,DE,IT,ES,RU,CN,JP,BR,CA,AU,IN,MX,KR,TR,UA,PL,SE,NO,CH,AR,EG,GR,NL,PT,IE,AT,BE,SA,ZA,FI,DK,IL,CU,AM,GE,NZ,CL,CO,CZ,HU,IR,KZ,TH,ID,HR,IS,RO,BG,PE,VN,PK,MA,PH,MY,SG,BY,AE,EE,LV,LT,KP", "AZ,BO,CR,CY,EC,ET,IQ,JM,JO,KE,KW,KG,LB,LU,MD,MN,NP,NG,PA,PY,QA,RS,SK,SI,LK,SY,TJ,TM,UY,UZ,VE,GH,BD,AF,MM,KH,MT,AL,SN,DZ,TN,LY,BA,MK,MV,OM,YE,TZ,UG,ZW,ZM,AO,CM,HT,BS,BB,TT,DO,SV,GT,HN,NI,PS,TW", "BT,BN,ML,NE,TV,NR,KI,PW,SC,SZ,LS,BI,KM,LA,BH,TL,PG,FJ,WS,TO,VU,SB,MH,FM,LI,SM,ME,AD,BZ,DM,GD,LC,SR,GY,GA,GM,SL,LR,TG,BJ,BF,CV,GQ,DJ,ER,SO,SS,MW,MZ,NA,BW,MG,MU,RW,MR,CI,GN,GW,CF,CG,CD,VC,KN,AG,SD,ST,TD,MC,VA,XK"];
 const T=CODES.map(s=>s.split(",").map(c=>({c,f:String.fromCodePoint(...[...c].map(ch=>127397+ch.charCodeAt(0)))})));
-const LV={e:{q:T[0],d:T[0]},m:{q:T[1],d:[...T[0],...T[1]]},h:{q:T[2],d:[...T[0],...T[1],...T[2]]}};
+const LV={e:{q:T.flat(),d:[...T[0],...T[1]]},m:{q:T.flat(),d:T.flat()},h:{q:T.flat(),d:[...T[0],...T[1],...T[2]]},a:{q:T.flat(),d:T.flat()}};
 const I={
 ru:{title:"Flag Game",nickAsk:"Придумай ник для таблицы лидеров",nickPh:"Твой ник",start:"Начать",tag:n=>n+" жизни, играй на рекорд",diff:"Сложность",lv:{e:"Лёгкий",m:"Средний",h:"Сложный"},m1:"Название → флаг",m2:"Флаг → название",rec:"рекорд",set:"Настройки",theme:"Тема",auto:"Системная",light:"Светлая",dark:"Тёмная",snd:"Звук и вибрация",on:"Вкл",off:"Выкл",nick:"Ник",saveNick:"Сохранить ник",lang:"Язык",lead:"Лидеры",load:"Загрузка…",noDb:"Рейтинг не подключён.",needNick:"Введи ник",authErr:"Не удалось войти",google:"Войти через Google",email:"Эл. почта",pass:"Пароль",signIn:"Войти",signUp:"Регистрация",signOut:"Выйти из аккаунта",none:"Пока никого. Стань первым!",fail:"Не удалось загрузить рейтинг.",player:"Игрок",over:"Игра окончена",newRec:"🏆 Новый рекорд!",again:"Играть ещё",board:"🏆 Таблица лидеров",menu:"В меню",best:"Рекорд",signin:"Войти и играть",guestBtn:"Играть как гость",guestName:"Гость",acctOn:"☁️ В рейтинге",guestOn:"Гость · без рейтинга",mode:"Вход",modeAcct:"Аккаунт",modeGuest:"Гость",beta:"Бета-тестеры",betaAdd:"Добавить ник",betaNone:"Пока никого",shop:"Магазин",pick:"Выбрать",picked:"Выбрано",noRub:"Не хватает рубинов",earn:"За каждые 10 верных ответов: лёгкий +1, средний +2, сложный +3 ◆",hardNote:"⏱ 7 секунд на ответ, похожие флаги",dev:"Панель разработчика",total:"Всего",active:"Активные · 7 дн.",inactive:"Неактивные",now:"только что",min:"мин назад",hr:"ч назад",day:"дн. назад",cheat:"Управление",setRec:"Поставить рекорд",unlockAll:"Открыть всё в магазине",cuLock:"Купи всё в магазине, чтобы открыть кастом. Осталось: {n}",cBg1:"Фон: цвет 1",cBg2:"Фон: цвет 2",cAc:"Акцент",cTx:"Текст",cCard:"Карточки",cAng:"Угол градиента",cAlpha:"Прозрачность карточек",cPitch:"Высота звуков",cHeart:"Иконка жизни (эмодзи)",cReset:"Сбросить"},
 en:{title:"Flag Game",nickAsk:"Pick a nickname for the leaderboard",nickPh:"Your nickname",start:"Start",tag:n=>n+" lives, play for a record",diff:"Difficulty",lv:{e:"Easy",m:"Medium",h:"Hard"},m1:"Name → flag",m2:"Flag → name",rec:"best",set:"Settings",theme:"Theme",auto:"System",light:"Light",dark:"Dark",snd:"Sound & vibration",on:"On",off:"Off",nick:"Nickname",saveNick:"Save nickname",lang:"Language",lead:"Leaders",load:"Loading…",noDb:"Leaderboard is not connected.",needNick:"Enter a nickname",authErr:"Sign-in failed",google:"Sign in with Google",email:"Email",pass:"Password",signIn:"Sign in",signUp:"Sign up",signOut:"Sign out",none:"Nobody yet. Be the first!",fail:"Couldn’t load the leaderboard.",player:"Player",over:"Game over",newRec:"🏆 New record!",again:"Play again",board:"🏆 Leaderboard",menu:"Menu",best:"Best",signin:"Sign in & play",guestBtn:"Play as guest",guestName:"Guest",acctOn:"☁️ Ranked",guestOn:"Guest · not ranked",mode:"Sign-in",modeAcct:"Account",modeGuest:"Guest",beta:"Beta testers",betaAdd:"Add nickname",betaNone:"Nobody yet",shop:"Shop",pick:"Select",picked:"Selected",noRub:"Not enough rubies",earn:"Every 10 correct answers: easy +1, medium +2, hard +3 ◆",hardNote:"⏱ 7 seconds per answer, lookalike flags",dev:"Developer panel",total:"Total",active:"Active · 7 days",inactive:"Inactive",now:"just now",min:"min ago",hr:"h ago",day:"d ago",cheat:"Controls",setRec:"Set record",unlockAll:"Unlock everything",cuLock:"Buy everything in the shop to unlock custom. Left: {n}",cBg1:"Background: color 1",cBg2:"Background: color 2",cAc:"Accent",cTx:"Text",cCard:"Cards",cAng:"Gradient angle",cAlpha:"Card opacity",cPitch:"Sound pitch",cHeart:"Life icon (emoji)",cReset:"Reset"},
 hy:{title:"Flag Game",nickAsk:"Ընտրիր մականուն առաջատարների աղյուսակի համար",nickPh:"Քո մականունը",start:"Սկսել",tag:n=>n+" կյանք, խաղա ռեկորդի համար",diff:"Բարդություն",lv:{e:"Հեշտ",m:"Միջին",h:"Դժվար"},m1:"Անուն → դրոշ",m2:"Դրոշ → անուն",rec:"ռեկորդ",set:"Կարգավորումներ",theme:"Թեմա",auto:"Համակարգի",light:"Լուսավոր",dark:"Մութ",snd:"Ձայն և թրթռոց",on:"Միաց.",off:"Անջատ.",nick:"Մականուն",saveNick:"Պահպանել մականունը",lang:"Լեզու",lead:"Առաջատարներ",load:"Բեռնվում է…",noDb:"Աղյուսակը միացված չէ։",needNick:"Մուտքագրիր մականունը",authErr:"Մուտքը չհաջողվեց",google:"Մուտք Google-ով",email:"Էլ. փոստ",pass:"Գաղտնաբառ",signIn:"Մուտք",signUp:"Գրանցում",signOut:"Դուրս գալ",none:"Դեռ ոչ ոք չկա։ Եղիր առաջինը։",fail:"Չհաջողվեց բեռնել աղյուսակը։",player:"Խաղացող",over:"Խաղն ավարտվեց",newRec:"🏆 Նոր ռեկորդ։",again:"Խաղալ նորից",board:"🏆 Առաջատարների աղյուսակ",menu:"Մենյու",best:"Ռեկորդ",signin:"Մուտք և խաղ",guestBtn:"Խաղալ որպես հյուր",guestName:"Հյուր",acctOn:"☁️ Վարկանիշում",guestOn:"Հյուր · առանց վարկանիշի",mode:"Մուտք",modeAcct:"Հաշիվ",modeGuest:"Հյուր",beta:"Բետա թեստավորողներ",betaAdd:"Ավելացնել մականուն",betaNone:"Դեռ ոչ ոք",shop:"Խանութ",pick:"Ընտրել",picked:"Ընտրված",noRub:"Ռուբինները չեն բավարարում",earn:"Յուրաքանչյուր 10 ճիշտ պատասխանի համար՝ հեշտ +1, միջին +2, դժվար +3 ◆",hardNote:"⏱ 7 վայրկյան պատասխանի համար, նման դրոշներ",dev:"Մշակողի վահանակ",total:"Ընդամենը",active:"Ակտիվ · 7 օր",inactive:"Ոչ ակտիվ",now:"հենց նոր",min:"րոպե առաջ",hr:"ժ առաջ",day:"օր առաջ",cheat:"Կառավարում",setRec:"Սահմանել ռեկորդ",unlockAll:"Բացել ամեն ինչ",cuLock:"Կաստոմը բացելու համար գնիր ամեն ինչ խանութում։ Մնաց՝ {n}",cBg1:"Ֆոն՝ գույն 1",cBg2:"Ֆոն՝ գույն 2",cAc:"Շեշտ",cTx:"Տեքստ",cCard:"Քարտեր",cAng:"Գրադիենտի անկյուն",cAlpha:"Քարտերի թափանցիկություն",cPitch:"Ձայնի բարձրություն",cHeart:"Կյանքի պատկերակ (էմոջի)",cReset:"Վերականգնել"}};
+const X={
+ru:{m3:"⚡ Блиц 60 с",daily:"📅 Задание дня",duel:"👥 Дуэль",ach:"🏅 Достижения",needLogin:"Нужен вход в аккаунт",nickTaken:"Этот ник уже занят",nickBad:"Ник: 3–14 символов, буквы, цифры, _ и -",dailyDone:"Сегодня уже выполнено: {n}/10. Приходи завтра!",dailyR:"Награда: +{n} ◆",newRoom:"Создать дуэль",join:"Войти",codePh:"Код комнаты",code:"Код",noRoom:"Комната не найдена",full:"Комната занята",waiting:"Ждём соперника… Отправь ему код.",youWin:"Победа! +2 ◆",youLose:"Поражение",draw:"Ничья",results:"Результаты"},
+en:{m3:"⚡ Blitz 60s",daily:"📅 Daily",duel:"👥 Duel",ach:"🏅 Achievements",needLogin:"Sign in required",nickTaken:"This nickname is taken",nickBad:"Nickname: 3–14 chars, letters, digits, _ and -",dailyDone:"Already done today: {n}/10. Come back tomorrow!",dailyR:"Reward: +{n} ◆",newRoom:"Create duel",join:"Join",codePh:"Room code",code:"Code",noRoom:"Room not found",full:"Room is full",waiting:"Waiting for opponent… Send them the code.",youWin:"You win! +2 ◆",youLose:"You lost",draw:"Draw",results:"Results"},
+hy:{m3:"⚡ Բլից 60 վ",daily:"📅 Օրվա առաջադրանք",duel:"👥 Մենամարտ",ach:"🏅 Նվաճումներ",needLogin:"Անհրաժեշտ է մուտք",nickTaken:"Այս մականունն արդեն զբաղված է",nickBad:"Մականուն՝ 3–14 նիշ, տառեր, թվեր, _ և -",dailyDone:"Այսօր արդեն կատարված է՝ {n}/10։ Վերադարձիր վաղը։",dailyR:"Վարձ՝ +{n} ◆",newRoom:"Ստեղծել մենամարտ",join:"Մտնել",codePh:"Սենյակի կոդ",code:"Կոդ",noRoom:"Սենյակը չի գտնվել",full:"Սենյակը լիքն է",waiting:"Սպասում ենք մրցակցին… Ուղարկիր նրան կոդը։",youWin:"Հաղթանակ։ +2 ◆",youLose:"Պարտություն",draw:"Ոչ-ոքի",results:"Արդյունքներ"}};
+for(const k in X)Object.assign(I[k],X[k]);
 const $=document.getElementById("app"),LIVES=3;
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const ls=(k,v)=>{try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){}return null};
 let st={};try{st=JSON.parse(ls("flagv3")||"{}")}catch(e){}
-st.best=st.best||{};st.lv=st.lv||"e";st.theme=st.theme||"auto";st.snd=st.snd!==false;st.nick=st.nick||"";st.rub=st.rub||0;st.own=st.own||["classic"];st.skin=st.skin||"classic";st.prog=st.prog||{};
+st.best=st.best||{};st.lv=st.lv||"e";st.theme=st.theme||"auto";st.snd=st.snd!==false;st.nick=st.nick||"";st.rub=st.rub||0;st.own=st.own||["classic"];st.skin=st.skin||"classic";st.prog=st.prog||{};st.stat={correct:0,maxStreak:0,games:0,dailyStreak:0,duelWins:0,...(st.stat||{})};st.ach=st.ach||[];st.daily=st.daily||{};if(st.lv==="a")st.lv="e";
 st.sel=st.sel||{};if(!st.sel.skin)st.sel.skin=st.skin;st.sel={snd:"snd:classic",fx:"fx:calm",heart:"heart:red",frame:"fr:round",...st.sel};
 ["classic","snd:classic","fx:calm","heart:red","fr:round"].forEach(i=>{if(!st.own.includes(i))st.own.push(i)});
 st.cu={on:false,bg1:"#1e1e2e",bg2:"#3a1c71",ac:"#ffffff",tx:"#ffffff",card:"#000000",ca:.25,ang:160,heart:"❤️",pitch:1,...(st.cu||{})};
@@ -158,11 +166,11 @@ applyTheme();
 applySkin();
 let initErr="",scr="",uid=null,F=null,ac,mode,score,lives,pool,timer,last,lbMode=1,lbLv="e";
 const FIREBASE_CONFIG={apiKey:"AIzaSyDjs8l6hbh4pftXKvipO_TEyg4sXVP7njo",authDomain:"flag-game-marker.firebaseapp.com",projectId:"flag-game-marker",storageBucket:"flag-game-marker.firebasestorage.app",messagingSenderId:"255079278063",appId:"1:255079278063:web:50cf38d21b6236a996821a"};
-async function initFb(){if(!FIREBASE_CONFIG.apiKey){initErr="FIREBASE_CONFIG: apiKey empty";return}try{const B="https://www.gstatic.com/firebasejs/10.12.2/";const[a,au,fs]=await Promise.all([import(B+"firebase-app.js"),import(B+"firebase-auth.js"),import(B+"firebase-firestore.js")]);const app=a.initializeApp(FIREBASE_CONFIG),auth=au.getAuth(app),store=fs.getFirestore(app);F={au,fs,auth,store};au.onAuthStateChanged(auth,u=>{uid=u?u.uid:null;if(u){push();ping()}if(scr==="home"||scr==="welcome")home()})}catch(e){F=null;initErr=String(e&&e.message||e)}}
+async function initFb(){if(!FIREBASE_CONFIG.apiKey){initErr="FIREBASE_CONFIG: apiKey empty";return}try{const B="https://www.gstatic.com/firebasejs/10.12.2/";const[a,au,fs]=await Promise.all([import(B+"firebase-app.js"),import(B+"firebase-auth.js"),import(B+"firebase-firestore.js")]);const app=a.initializeApp(FIREBASE_CONFIG),auth=au.getAuth(app),store=fs.getFirestore(app);F={au,fs,auth,store};au.onAuthStateChanged(auth,u=>{uid=u?u.uid:null;if(u){push();ping();legacyClaim()}if(scr==="home"||scr==="welcome")home()})}catch(e){F=null;initErr=String(e&&e.message||e)}}
 function nickVal(){return document.getElementById("nk").value.trim().slice(0,14)}
-async function authDo(kind){const v=nickVal(),err=document.getElementById("err");if(!v){err.textContent=t().needNick;return}if(!F){err.textContent=t().noDb+" ["+initErr+"]";return}
-try{const a=F.au;if(kind==="g")await a.signInWithPopup(F.auth,new a.GoogleAuthProvider());else{const em=document.getElementById("em").value.trim(),pw=document.getElementById("pw").value;if(kind==="in")await a.signInWithEmailAndPassword(F.auth,em,pw);else await a.createUserWithEmailAndPassword(F.auth,em,pw)}
-uid=F.auth.currentUser&&F.auth.currentUser.uid;st.nick=v;st.guest=false;save();push();ping();home()}catch(e){err.textContent=t().authErr+" ("+(e.code||e.message)+")"}}
+async function authDo(kind){const v=nickVal(),err=document.getElementById("err");if(!v){err.textContent=t().needNick;return}if(!NICK_RE.test(v)){err.textContent=t().nickBad;return}if(!F){err.textContent=t().noDb+" ["+initErr+"]";return}
+try{const a=F.au;if(F.auth.currentUser){}else if(kind==="g")await a.signInWithPopup(F.auth,new a.GoogleAuthProvider());else{const em=document.getElementById("em").value.trim(),pw=document.getElementById("pw").value;if(kind==="in")await a.signInWithEmailAndPassword(F.auth,em,pw);else await a.createUserWithEmailAndPassword(F.auth,em,pw)}
+uid=F.auth.currentUser&&F.auth.currentUser.uid;const r=await claimNick(v);if(!r.ok){err.textContent=r.err;return}st.nick=v;st.guest=false;save();push();ping();home()}catch(e){err.textContent=t().authErr+" ("+(e.code||e.message)+")"}}
 function doOut(){F.au.signOut(F.auth).then(()=>{uid=null;st.nick="";save();welcome()})}
 function push(){if(st.guest||!F||!uid||!st.nick)return;try{F.fs.setDoc(F.fs.doc(F.store,"scores",uid),{name:st.nick,u:Date.now(),...Object.fromEntries(Object.entries(st.best).map(([k,v])=>["k"+k,v]))}).catch(()=>{})}catch(e){}}
 function tone(f,d0,d,type="sine",v=.15){if(!st.snd)return;const P=SP();type=P.t||type;f*=P.m;v*=P.v;try{ac=ac||new(window.AudioContext||window.webkitAudioContext)();const o=ac.createOscillator(),g=ac.createGain(),s=ac.currentTime+d0;o.type=type;o.frequency.value=f;g.gain.setValueAtTime(v,s);g.gain.exponentialRampToValueAtTime(.001,s+d);o.connect(g);g.connect(ac.destination);o.start(s);o.stop(s+d)}catch(e){}}
@@ -181,14 +189,21 @@ $.innerHTML=`${langSeg()}<img class="gl" src="flag-game.png" alt="" onerror="thi
 <input id="em" type="email" placeholder="${esc(t().email)}" autocomplete="email"><input id="pw" type="password" placeholder="${esc(t().pass)}" autocomplete="current-password">
 <div class="seg"><button onclick="authDo('in')">${t().signIn}</button><button onclick="authDo('up')">${t().signUp}</button></div>
 <p id="err" class="s" style="color:var(--bad)"></p><button onclick="setNick(true)">${t().guestBtn}</button>`}
-function setNick(g){let v=document.getElementById("nk").value.trim().slice(0,14);if(g===true){st.guest=true;v=v||t().guestName}else if(g===false)st.guest=false;if(!v)return;st.nick=v;save();push();home()}
-function home(){scr="home";
+async function setNick(g){let v=document.getElementById("nk").value.trim().slice(0,14);
+if(g===true){st.guest=true;v=v||t().guestName;st.nick=v;save();return home()}
+if(g===false)st.guest=false;
+if(!v)return;
+if(F&&uid&&!st.guest){const r=await claimNick(v);if(!r.ok){toast(r.err);return}}
+st.nick=v;save();push();home()}
+function home(){scr="home";if(duelUnsub){duelUnsub();duelUnsub=null}checkAch();
 if(!st.nick)return welcome();
 $.innerHTML=`<div class="top"><span>👤 ${esc(st.nick)}</span><span><span class="rbv">◆ ${st.rub}</span><button class="ic" onclick="shop()">🛍️</button><button class="ic" onclick="board()">🏆</button><button class="ic" onclick="settings()">⚙️</button></span></div>
 <img class="gl" src="flag-game.png" alt="" onerror="this.remove()"><h1 class="logo">${t().title}</h1><p class="s">${t().tag(MAXL[st.lv])}<br>${st.guest||!uid?t().guestOn:t().acctOn}</p>
 <div class="lab">${t().diff}</div>${seg(lvItems(),st.lv,"pickLv")}${st.lv==="h"?`<p class="s">${t().hardNote}</p>`:""}
 <button class="big" onclick="start(1)"><span>${t().m1}</span><small>${t().rec} ${bk(1,st.lv)}</small></button>
-<button class="big" onclick="start(2)"><span>${t().m2}</span><small>${t().rec} ${bk(2,st.lv)}</small></button>`}
+<button class="big" onclick="start(2)"><span>${t().m2}</span><small>${t().rec} ${bk(2,st.lv)}</small></button>
+<button class="big" onclick="start(3)"><span>${t().m3}</span><small>${t().rec} ${bk(3,st.lv)}</small></button>
+<div class="grid f3"><button onclick="dailyStart()">${t().daily}</button><button onclick="duelMenu()">${t().duel}</button><button onclick="achScreen()">${t().ach}</button></div>`}
 function pickLv(k){st.lv=k;save();home()}
 function settings(){scr="x";
 $.innerHTML=`<div class="top"><button class="ic" onclick="home()">←</button><h2>${t().set}</h2><span style="width:40px"></span></div>
@@ -204,7 +219,7 @@ function pickTheme(k){st.theme=k;save();applyTheme();settings()}
 function pickSnd(k){st.snd=k==="1";save();settings();tone(660,0,.1)}
 function board(){scr="x";
 $.innerHTML=`<div class="top"><button class="ic" onclick="home()">←</button><h2>${t().lead}</h2><span style="width:40px"></span></div>
-${seg([[1,t().m1],[2,t().m2]],lbMode,"lbM")}${seg(lvItems(),lbLv,"lbL")}<div id="lb" class="grid"><p class="s">${F?t().load:t().noDb}</p></div>`;
+${seg([[1,t().m1],[2,t().m2],[3,t().m3]],lbMode,"lbM")}${seg(lvItems(),lbLv,"lbL")}<div id="lb" class="grid"><p class="s">${F?t().load:t().noDb}</p></div>`;
 if(!F)return;
 const key="k"+lbMode+lbLv;
 F.fs.getDocs(F.fs.query(F.fs.collection(F.store,"scores"),F.fs.orderBy(key,"desc"),F.fs.limit(20))).then(s=>{
@@ -213,31 +228,71 @@ const el=document.getElementById("lb");if(!el)return;
 el.innerHTML=rows.length?rows.map((r,i)=>`<div class="row ${r.id===uid?"me":""}"><i>${i+1}</i><b>${esc(r.name||t().player)}</b><span>${r[key]}</span></div>`).join(""):`<p class="s">${t().none}</p>`
 }).catch(()=>{const el=document.getElementById("lb");if(el)el.innerHTML=`<p class="s">${t().fail}</p>`})}
 function lbM(k){lbMode=+k;board()}function lbL(k){lbLv=k;board()}
-const MAXL={e:3,m:3,h:2},RW={e:1,m:2,h:3},TL={h:7000};
-let maxL=3,tq,tk=[],streak=0;
+const MAXL={e:3,m:3,h:2,a:3},RW={e:1,m:2,h:3,a:2},TL={h:7000};
+let maxL=3,tq,tk=[],streak=0,SR=null,bt,blEnd=0,duelUnsub=null;
 const ALL=T.flat();LV.h.d=[...T[1],...T[2]];
 const SIM=[["RO","AD","MD"],["IE","CI","IT","MX","NE","IN"],["HU","BG","IR","TJ","IT"],["NL","LU","PY","RU","SI","SK","HR","RS"],["NO","IS","DK","SE","FI"],["AU","NZ","FJ","TV"],["US","LR","MY","CU","UY","GR"],["SN","ML","GN","GH","CM","BF","GW","TG","BJ","CI"],["CO","EC","VE"],["QA","BH"],["EG","IQ","SY","YE","SD"],["CG","CD","CF"],["TR","TN","DZ","MV"],["VC","LC","DM","GD","AG","KN","TT","BB","BS"],["BD","JP","PW"],["MM","ET","BO","GH","LT"],["KW","JO","AE","SD","OM"],["TH","CR"],["CZ","PH"]];
-function start(m){mode=m;score=0;maxL=MAXL[st.lv];lives=maxL;streak=0;ask()}
-function next(){st.used=st.used||{};const u=st.used[st.lv]=st.used[st.lv]||[],q=LV[st.lv].q;let c=q.filter(x=>!u.includes(x.c));if(!c.length){u.length=0;c=q.filter(x=>x!==last)}const a=c[Math.random()*c.length|0];u.push(a.c);last=a;save();return a}
+function start(m){mode=m;SR=null;score=0;maxL=MAXL[st.lv];lives=maxL;streak=0;st.stat.games++;clearTimeout(bt);if(m===3){blEnd=Date.now()+6e4;bt=setTimeout(()=>{clearTimeout(timer);clearTimeout(tq);tk.forEach(clearTimeout);end()},6e4)}ask()}
+const WT={e:[.6,.3,.1],m:[.25,.5,.25],h:[.1,.3,.6]};
+function next(){st.used=st.used||{};const u=st.used[st.lv]=st.used[st.lv]||[];
+let free=T.map(g=>g.filter(x=>!u.includes(x.c)));
+if(!free.some(g=>g.length)){u.length=0;free=T.map(g=>g.filter(x=>x!==last))}
+const ws=(WT[st.lv]||[1,1,1]).map((x,i)=>free[i].length?x:0),tot=ws.reduce((p,c)=>p+c,0);let r=Math.random()*tot,ti=0;for(;ti<2;ti++){if(r<ws[ti])break;r-=ws[ti]}
+const c=free[ti],a=c[Math.random()*c.length|0];u.push(a.c);last=a;save();return a}
 function record(){if(score>bk(mode,st.lv)){st.best[mode+st.lv]=score;save();push();return true}return false}
-function quit(){clearTimeout(timer);clearTimeout(tq);tk.forEach(clearTimeout);record();ping();home()}
-function opts4(a){const L=LV[st.lv],n=st.lv==="h"?3:st.lv==="m"?1:0,rnd=()=>Math.random()-.5;
-const sim=[...new Set(SIM.filter(g=>g.includes(a.c)).flat().filter(c=>c!==a.c))].sort(rnd).map(c=>ALL.find(x=>x.c===c)).filter(Boolean).slice(0,n);
-const rest=L.d.filter(x=>x!==a&&!sim.includes(x)).sort(rnd);
+function quit(){clearTimeout(timer);clearTimeout(tq);tk.forEach(clearTimeout);clearTimeout(bt);if(SR){SR=null;return home()}record();ping();home()}
+const CONF={TD:["RO","AD","MD"],RO:["TD"],AD:["TD"],MD:["TD"],MC:["ID"],ID:["MC"]};
+function opts4(a){const k=SR?"a":st.lv,L=LV[k],n=k==="h"?3:k==="m"?1:k==="a"?2:0,rnd=()=>Math.random()-.5,bad=CONF[a.c]||[];
+const sim=[...new Set(SIM.filter(g=>g.includes(a.c)).flat().filter(c=>c!==a.c&&!bad.includes(c)))].sort(rnd).map(c=>ALL.find(x=>x.c===c)).filter(Boolean).slice(0,n);
+const rest=L.d.filter(x=>x!==a&&!sim.includes(x)&&!bad.includes(x.c)).sort(rnd);
 return [a,...sim,...rest].slice(0,4).sort(rnd)}
 function toast(m){const d=document.createElement("div");d.className="toast";d.textContent=m;document.body.appendChild(d);setTimeout(()=>d.remove(),1500)}
 function ask(){scr="x";
-const a=next(),opts=opts4(a),tl=TL[st.lv];
-$.innerHTML=`<div class="top"><span class="sc">${score}</span><span class="hp">${HI().repeat(lives)}<span style="opacity:.22">${HI().repeat(maxL-lives)}</span></span><button class="ic" onclick="quit()" aria-label="${esc(t().menu)}">✕</button></div>${tl?'<div class="tb"><i id="tb"></i></div>':""}
-<div class="q">${mode==1?`<div class="n">${esc(nm(a.c))}</div>`:`<div class="f">${a.f}</div>`}</div>
-<div class="grid ${mode==1?"f2":"f1"}">${opts.map(o=>`<button>${mode==1?o.f:esc(nm(o.c))}</button>`).join("")}</div>`;
+const a=SR?SR.q[SR.i]:next(),opts=opts4(a),bl=mode===3&&!SR,tl=(SR||bl)?0:TL[st.lv],dm=SR?(SR.i%2?2:1):(mode===3?(Math.random()<.5?1:2):mode);
+$.innerHTML=`<div class="top"><span class="sc">${score}</span><span class="hp">${SR?`${SR.i+1}/${SR.q.length}`:bl?"⚡":`${HI().repeat(lives)}<span style="opacity:.22">${HI().repeat(maxL-lives)}</span>`}</span><button class="ic" onclick="quit()" aria-label="${esc(t().menu)}">✕</button></div>${tl||bl?'<div class="tb"><i id="tb"></i></div>':""}
+<div class="q">${dm==1?`<div class="n">${esc(nm(a.c))}</div>`:`<div class="f">${a.f}</div>`}</div>
+<div class="grid ${dm==1?"f2":"f1"}">${opts.map(o=>`<button>${dm==1?o.f:esc(nm(o.c))}</button>`).join("")}</div>`;
 const bs=[...$.querySelectorAll(".grid button")];
 const done=sel=>{clearTimeout(tq);tk.forEach(clearTimeout);bs.forEach(x=>x.disabled=true);const ok=sel>=0&&opts[sel]===a;
-if(ok){score++;streak++;sOk(streak);bs[sel].classList.add("ok");{const r=bs[sel].getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,14)}st.prog[st.lv]=(st.prog[st.lv]||0)+1;if(st.prog[st.lv]>=10){st.prog[st.lv]=0;st.rub+=RW[st.lv];toast("+"+RW[st.lv]+" ◆");setTimeout(sRuby,300)}save()}
-else{streak=0;lives--;sBad();if(sel>=0)bs[sel].classList.add("bad");bs[opts.indexOf(a)].classList.add("ok")}
-timer=setTimeout(()=>lives>0?ask():end(),ok?650:1100)};
+if(ok){score++;streak++;sOk(streak);bs[sel].classList.add("ok");{const r=bs[sel].getBoundingClientRect();burst(r.left+r.width/2,r.top+r.height/2,14)}st.prog[st.lv]=(st.prog[st.lv]||0)+1;if(st.prog[st.lv]>=10){st.prog[st.lv]=0;st.rub+=RW[st.lv];toast("+"+RW[st.lv]+" ◆");setTimeout(sRuby,300)}st.stat.correct++;st.stat.maxStreak=Math.max(st.stat.maxStreak,streak);checkAch();save()}
+else{streak=0;if(!SR&&mode!==3)lives--;sBad();if(sel>=0)bs[sel].classList.add("bad");bs[opts.indexOf(a)].classList.add("ok")}
+timer=setTimeout(()=>SR?(++SR.i<SR.q.length?ask():endSR()):(lives>0?ask():end()),ok?650:1100)};
 bs.forEach((b,k)=>b.onclick=()=>done(k));
-if(tl){const tb=document.getElementById("tb");requestAnimationFrame(()=>requestAnimationFrame(()=>{tb.style.transition="width "+tl+"ms linear";tb.style.width="0"}));tq=setTimeout(()=>done(-1),tl);tk=[tl-2000,tl-1000].map(x=>setTimeout(sTick,x))}}
+if(tl){const tb=document.getElementById("tb");requestAnimationFrame(()=>requestAnimationFrame(()=>{tb.style.transition="width "+tl+"ms linear";tb.style.width="0"}));tq=setTimeout(()=>done(-1),tl);tk=[tl-2000,tl-1000].map(x=>setTimeout(sTick,x))}
+if(bl){const tb=document.getElementById("tb"),rem=Math.max(0,blEnd-Date.now());tb.style.width=(rem/600)+"%";requestAnimationFrame(()=>requestAnimationFrame(()=>{tb.style.transition="width "+rem+"ms linear";tb.style.width="0"}))}}
+const rng=s0=>{let a=s0>>>0;return()=>{a=a+0x6D2B79F5|0;let t0=Math.imul(a^a>>>15,1|a);t0=t0+Math.imul(t0^t0>>>7,61|t0)^t0;return((t0^t0>>>14)>>>0)/4294967296}};
+const hash=str=>{let h=2166136261;for(const c of str)h=Math.imul(h^c.charCodeAt(0),16777619);return h>>>0};
+const seedQ=sd=>{const r=rng(sd),a=[...ALL];for(let i=a.length-1;i>0;i--){const j=r()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a.slice(0,10)};
+const today=()=>new Date().toISOString().slice(0,10);
+function startSR(kind,seed,code){SR={kind,code,q:seedQ(seed),i:0};score=0;streak=0;lives=99;st.stat.games++;ask()}
+function dailyStart(){const d=today();if(st.daily.d===d){scr="x";$.innerHTML=`<div class="top"><button class="ic" onclick="home()">←</button><h2>${t().daily}</h2><span></span></div><p class="s">${t().dailyDone.replace("{n}",st.daily.score)}</p><button class="big" onclick="home()"><span>${t().menu}</span></button>`;return}startSR("daily",hash("flag"+d))}
+function endSR(){const k=SR.kind;sEnd();
+if(k==="daily"){const d=today(),y=new Date(Date.now()-864e5).toISOString().slice(0,10),ns=st.daily.d===y?(st.daily.streak||0)+1:1,rw=Math.floor(score/2)+Math.min(ns,7);st.daily={d,score,streak:ns};st.stat.dailyStreak=Math.max(st.stat.dailyStreak,ns);st.rub+=rw;save();checkAch();SR=null;
+$.innerHTML=`<h1>${t().daily}</h1><div class="res">${score}/10</div><p class="new">${t().dailyR.replace("{n}",rw)} · 🔥 ${ns}</p><button class="big" onclick="home()"><span>${t().menu}</span></button>`;return}
+const code=SR.code;SR=null;try{F.fs.updateDoc(F.fs.doc(F.store,"rooms",code),{["p."+uid]:{name:st.nick,score,done:true}}).catch(()=>{})}catch(e){}duelView(code)}
+function duelMenu(){scr="x";
+$.innerHTML=`<div class="top"><button class="ic" onclick="home()">←</button><h2>${t().duel}</h2><span></span></div>${uid&&F&&!st.guest?`<button class="big" onclick="duelCreate()"><span>${t().newRoom}</span></button><div class="row"><input id="rc" maxlength="5" placeholder="${esc(t().codePh)}" style="text-transform:uppercase;flex:1;min-width:0"><button onclick="duelJoin()">${t().join}</button></div>`:`<p class="s">${t().needLogin}</p>`}`}
+async function duelCreate(){const code=Math.random().toString(36).slice(2,7).toUpperCase(),seed=Math.random()*4294967296>>>0;
+try{await F.fs.setDoc(F.fs.doc(F.store,"rooms",code),{seed,created:Date.now(),p:{[uid]:{name:st.nick,score:null,done:false}}});startSR("duel",seed,code)}catch(e){toast(t().needLogin)}}
+async function duelJoin(){const code=document.getElementById("rc").value.trim().toUpperCase();if(!code)return;
+try{const R=F.fs.doc(F.store,"rooms",code),d=await F.fs.getDoc(R);if(!d.exists()){toast(t().noRoom);return}const r=d.data(),ids=Object.keys(r.p||{});
+if(!ids.includes(uid)){if(ids.length>=2){toast(t().full);return}await F.fs.updateDoc(R,{["p."+uid]:{name:st.nick,score:null,done:false}})}
+if(r.p&&r.p[uid]&&r.p[uid].done){duelView(code);return}startSR("duel",r.seed,code)}catch(e){toast(t().noRoom)}}
+function duelView(code){scr="duel";if(duelUnsub)duelUnsub();
+duelUnsub=F.fs.onSnapshot(F.fs.doc(F.store,"rooms",code),d=>{if(!d.exists()||scr!=="duel")return;const p=d.data().p||{},ids=Object.keys(p),all=ids.length===2&&ids.every(i=>p[i].done);let msg=t().waiting;
+if(all){const me=p[uid].score,ot=p[ids.find(i=>i!==uid)].score;if(me>ot){msg=t().youWin;if(!(st.dw||[]).includes(code)){st.dw=[...(st.dw||[]),code];st.rub+=2;st.stat.duelWins++;save()}}else msg=me<ot?t().youLose:t().draw}
+$.innerHTML=`<div class="top"><button class="ic" onclick="home()">←</button><h2>${t().results}</h2><span></span></div><p class="s">${t().code}: <b>${code}</b></p>${ids.map(i=>`<div class="row ${i===uid?"me":""}"><b>${esc(p[i].name||"?")}</b><span>${p[i].done?p[i].score+"/10":"…"}</span></div>`).join("")}<p class="new">${msg}</p><button class="big" onclick="home()"><span>${t().menu}</span></button>`})}
+const ACH=[["c1","✅",["Знаток","Expert","Գիտակ"],"correct",100,5],["c2","✅",["Знаток","Expert","Գիտակ"],"correct",500,15],["c3","✅",["Знаток","Expert","Գիտակ"],"correct",2000,50],["s1","🔥",["Серия","Streak","Շարք"],"maxStreak",10,5],["s2","🔥",["Серия","Streak","Շարք"],"maxStreak",25,15],["g1","🎮",["Игрок","Player","Խաղացող"],"games",10,3],["g2","🎮",["Игрок","Player","Խաղացող"],"games",100,20],["d1","📅",["Каждый день","Every day","Ամեն օր"],"dailyStreak",3,5],["d2","📅",["Каждый день","Every day","Ամեն օր"],"dailyStreak",7,15],["w1","👥",["Дуэлянт","Duelist","Մենամարտիկ"],"duelWins",1,5],["w2","👥",["Дуэлянт","Duelist","Մենամարտիկ"],"duelWins",10,25],["o1","🛍️",["Коллекционер","Collector","Կոլեկցիոներ"],"own",10,10],["o2","🛍️",["Коллекционер","Collector","Կոլեկցիոներ"],"own",25,40]];
+const stat=k=>k==="own"?st.own.length:(st.stat[k]||0);
+function checkAch(){ACH.forEach(a=>{if(!st.ach.includes(a[0])&&stat(a[3])>=a[4]){st.ach.push(a[0]);st.rub+=a[5];save();toast("🏅 "+a[2][LI()]+" · +"+a[5]+" ◆");setTimeout(sRuby,200)}})}
+function achScreen(){scr="x";$.innerHTML=`<div class="top"><button class="ic" onclick="home()">←</button><h2>${t().ach}</h2><span class="rbv">◆ ${st.rub}</span></div><div class="grid">${ACH.map(a=>{const cur=Math.min(stat(a[3]),a[4]),dn=st.ach.includes(a[0]);return `<div class="item"><div class="sw" style="display:flex;align-items:center;justify-content:center">${a[1]}</div><b>${a[2][LI()]}<br><small class="s" style="text-align:left">${cur}/${a[4]}</small></b><span class="rbv">${dn?"✓":"◆ "+a[5]}</span></div>`}).join("")}</div>`}
+const HG={"а":"a","е":"e","о":"o","р":"p","с":"c","у":"y","х":"x","к":"k","м":"m","т":"t","н":"h","в":"b","і":"i","ѕ":"s","ј":"j"};
+const nickKey=n=>[...n.toLowerCase().normalize("NFKC")].map(c=>HG[c]||c).join("");
+const NICK_RE=/^[\p{L}\p{N}_-]{3,14}$/u,RESERVED=["marker","markerteam","admin","owner","moderator","support","flaggame"];
+async function claimNick(v){if(!NICK_RE.test(v))return{ok:false,err:t().nickBad};const k=nickKey(v);if(RESERVED.includes(k)&&!isOwner())return{ok:false,err:t().nickTaken};
+try{const R=F.fs.doc(F.store,"nicks",k),d=await F.fs.getDoc(R);if(d.exists()&&d.data().uid!==uid)return{ok:false,err:t().nickTaken};
+const b=F.fs.writeBatch(F.store);if(!d.exists())b.set(R,{uid,nick:v});if(st.nickKey&&st.nickKey!==k)b.delete(F.fs.doc(F.store,"nicks",st.nickKey));await b.commit();st.nickKey=k;save();return{ok:true}}catch(e){return{ok:false,err:t().nickTaken+" ("+(e.code||"")+")"}}}
+function legacyClaim(){if(st.guest||!st.nick||st.nickKey)return;claimNick(st.nick).then(r=>{if(!r.ok){st.nick="";save();toast(r.err);welcome()}})}
 const LI=()=>({ru:0,en:1,hy:2})[st.lang];
 let shopCat="skin";
 const CN={skin:["Фоны","Backgrounds","Ֆոներ"],snd:["Звуки","Sounds","Ձայներ"],fx:["Эффекты","Effects","Էֆեկտներ"],heart:["Сердца","Hearts","Սրտեր"],frame:["Рамки","Frames","Շրջանակներ"],cu:["🎨 Кастом","🎨 Custom","🎨 Կաստոմ"]};
@@ -281,7 +336,7 @@ const rows=q.docs.map(d=>d.data()),now=Date.now(),act=rows.filter(r=>now-r.seen<
 const li=a=>a.length?a.map(r=>`<div class="row"><b>${esc(r.name||"?")}</b><span class="s">${ago(now-r.seen)}</span></div>`).join(""):`<p class="s">—</p>`;
 el.innerHTML=`<p class="s">${t().total}: ${rows.length} · ${t().active}: ${act.length} · ${t().inactive}: ${ina.length}</p><div class="lab">${t().active}</div>${li(act)}<div class="lab">${t().inactive}</div>${li(ina)}`}
 catch(e){el.innerHTML=`<p class="s">${t().fail}</p>`}}
-function end(){scr="x";ping();
+function end(){scr="x";clearTimeout(bt);ping();
 const rec=record();if(rec&&score>0){sRec();burst(innerWidth/2,innerHeight/3,40,true)}else sEnd();
 $.innerHTML=`<h1>${t().over}</h1><div class="res">${score}</div><p class="s">${t().lv[st.lv]} · ${t()["m"+mode]}</p>
 ${rec&&score>0?`<p class="new">${t().newRec}</p>`:`<p class="s">${t().best}: ${bk(mode,st.lv)}</p>`}
